@@ -1,0 +1,70 @@
+---
+title       : 'Geolocation Playground'
+subtitle    : 'with Leaflet and Shiny'
+author      : 'Daniel Amaral'
+job         : 
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight.js  # {highlight.js, prettify, highlight}
+hitheme     : tomorrow      # 
+widgets     : []            # {mathjax, quiz, bootstrap}
+mode        : selfcontained # {standalone, draft}
+knit        : slidify::knit2slides
+---
+
+
+## The behind idea
+
+Getting coordinates from a specific address is not always an easy process. There are several websites and api's that do this job, however our tool is simple and straightforward.
+
+The application was built in shiny with two main packages in action:
+
+1. Position Stack API, to get the geolocation data
+
+2. Leaflet, for the production of interactive maps
+
+---
+
+## How to get the coordinates in our app?
+
+it's very simple, look
+
+1. Enter the desired address
+
+2. Click on add Circle, if you want the point to be marked by a circle.
+
+3. Click on geolocate... and you're done.
+
+---
+
+## The app appearance
+
+<img src="./assets/img/homepage.PNG" title="plot of chunk unnamed-chunk-1" alt="plot of chunk unnamed-chunk-1" width="900px" style="display: block; margin: auto;" />
+
+---
+
+## The behind function to geolocate
+
+The main function that returns the longitude and latitude of an address string is given below
+
+
+```r
+geocodeAdddress <- function(address) {
+    source('./key.R') # API key
+    url <- 'http://api.positionstack.com/v1/forward?access_key='
+    url <- URLencode(paste(url, key, '&query=', address, "&limit=1", sep = ""))
+    x <- fromJSON(url, simplify = FALSE)
+    if (length(x$data)) {out <- c(x$data[[1]]$longitude, x$data[[1]]$latitude)} 
+    else {out <- NA}
+    out
+}
+```
+
+
+```r
+geocodeAdddress('1600 Pennsylvania Ave NW, Washington DC') # white house
+```
+
+```
+## [1] -77.03655  38.89767
+```
+
